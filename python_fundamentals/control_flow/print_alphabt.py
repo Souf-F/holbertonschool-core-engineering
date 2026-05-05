@@ -1,7 +1,3 @@
 #!/usr/bin/env python3
-import string
-
-for letter in string.ascii_lowercase:
-    if letter == 'e' or letter == 'q':
-        continue
-    print(letter, end='')
+#!/usr/bin/env python3
+print(''.join(letter for letter in "abcdefghijklmnopqrstuvwxyz" if letter not in 'qe'))
