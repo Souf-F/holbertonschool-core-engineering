@@ -1,2 +1,3 @@
 #!/usr/bin/env python3
-print("{}".format(''.join(letter for letter in "abcdefghijklmnopqrstuvwxyz" if letter not in 'qe')))
+#!/usr/bin/env python3
+print("{}".format(''.join(l for l in "abcdefghijklmnopqrstuvwxyz" if l not in 'qe')))
