@@ -1,2 +1,8 @@
 #!/usr/bin/env python3
-print("{}".format(''.join(l for l in "abcdefghijklmnopqrstuvwxyz" if l not in 'qe')))
+
+for i in range(97, 123):
+
+    if chr(i) == 'e' or chr(i) == 'q':
+        continue
+    print("{}".format(chr(i)), end='')
+    
