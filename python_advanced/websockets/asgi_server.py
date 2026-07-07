@@ -62,24 +62,24 @@ async def homepage(request):
     <body>
         <h1>WebSocket Echo Server</h1>
         <p>Connected: <span id="status">Connecting...</span></p>
-        
+
         <div id="messages"></div>
-        
+
         <input type="text" id="messageInput" placeholder="Type a message...">
         <button onclick="sendMessage()">Send</button>
-        
+
         <script>
             const messagesDiv = document.getElementById('messages');
             const statusSpan = document.getElementById('status');
             const input = document.getElementById('messageInput');
-            
+
             const ws = new WebSocket('ws://localhost:8000/ws');
-            
+
             ws.onopen = function() {
                 statusSpan.textContent = 'Connected ✓';
                 statusSpan.style.color = 'green';
             };
-            
+
             ws.onmessage = function(event) {
                 const message = document.createElement('div');
                 message.className = 'message received';
@@ -87,32 +87,32 @@ async def homepage(request):
                 messagesDiv.appendChild(message);
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
             };
-            
+
             ws.onerror = function(error) {
                 statusSpan.textContent = 'Error: ' + error;
                 statusSpan.style.color = 'red';
             };
-            
+
             ws.onclose = function() {
                 statusSpan.textContent = 'Disconnected';
                 statusSpan.style.color = 'red';
             };
-            
+
             function sendMessage() {
                 const text = input.value;
                 if (text.trim() !== '') {
                     ws.send(text);
-                    
+
                     const message = document.createElement('div');
                     message.className = 'message sent';
                     message.textContent = 'Sent: ' + text + ' →';
                     messagesDiv.appendChild(message);
                     messagesDiv.scrollTop = messagesDiv.scrollHeight;
-                    
+
                     input.value = '';
                 }
             }
-            
+
             input.addEventListener('keypress', function(event) {
                 if (event.key === 'Enter') {
                     sendMessage();
@@ -128,12 +128,12 @@ async def homepage(request):
 async def websocket_endpoint(websocket: WebSocket):
     """WebSocket endpoint at /ws"""
     await websocket.accept()
-    
+
     try:
         while True:
             # Receive message from client
             data = await websocket.receive_text()
-            
+
             # Echo back the same message
             await websocket.send_text(data)
     except Exception as e:
