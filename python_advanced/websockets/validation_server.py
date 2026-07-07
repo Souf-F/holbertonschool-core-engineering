@@ -6,16 +6,20 @@ and echoes valid messages back prefixed with "OK:".
 """
 import asyncio
 import websockets
+from websockets.exceptions import ConnectionClosed
 
 
 async def connection_handler(websocket):
     """Validate each incoming message before responding."""
-    async for message in websocket:
-        stripped = message.strip()
-        if not stripped:
-            await websocket.send("ERR:EMPTY")
-        else:
-            await websocket.send(f"OK:{stripped}")
+    try:
+        async for message in websocket:
+            stripped = message.strip()
+            if not stripped:
+                await websocket.send("ERR:EMPTY")
+            else:
+                await websocket.send(f"OK:{stripped}")
+    except ConnectionClosed:
+        pass
 
 
 async def main():
