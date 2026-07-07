@@ -1,30 +1,27 @@
 #!/usr/bin/env python3
-"""WebSocket server with basic message validation.
+"""WebSocket client.
 
-Rejects empty (or whitespace-only) messages with "ERR:EMPTY",
-and echoes valid messages back prefixed with "OK:".
+Exposes connect_and_send(uri, message) to send one message to a
+WebSocket server and return its response. When run directly, connects
+to the server at WS_URI (defaulting to ws://localhost:8765) and
+prints the response for the message "demo".
 """
 import asyncio
+import os
 import websockets
-from websockets.exceptions import ConnectionClosed
 
 
-async def connection_handler(websocket):
-    """Validate each incoming message before responding."""
-    try:
-        async for message in websocket:
-            stripped = message.strip()
-            if not stripped:
-                await websocket.send("ERR:EMPTY")
-            else:
-                await websocket.send(f"OK:{stripped}")
-    except ConnectionClosed:
-        pass
+async def connect_and_send(uri, message):
+    """Send message to uri over a WebSocket and return the response."""
+    async with websockets.connect(uri) as websocket:
+        await websocket.send(message)
+        return await websocket.recv()
 
 
 async def main():
-    async with websockets.serve(connection_handler, "localhost", 8765):
-        await asyncio.Future()  # run forever
+    uri = os.environ.get("WS_URI", "ws://localhost:8765")
+    response = await connect_and_send(uri, "demo")
+    print(response, end="")
 
 
 if __name__ == "__main__":
